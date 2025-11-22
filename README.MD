@@ -20,7 +20,7 @@ This repository contains enterprise-grade Terraform modules that I've developed 
 
 ### Networking
 
-#### [AWS VPC Module](./terraform-vpc-module)
+#### [AWS VPC Module](./vpc)
 Complete VPC setup with public/private subnets, NAT gateways, and Internet gateway.
 
 **Features:**
