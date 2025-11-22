@@ -78,7 +78,6 @@ Every module includes:
 - Detailed README with examples
 - Input/output documentation
 - Architecture diagrams
-- Troubleshooting guides
 
 ### 5. **Real-World Tested**
 These aren't theoretical modules. They're built from actual production needs and refined through use.
