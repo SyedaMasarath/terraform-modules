@@ -102,18 +102,11 @@ cd terraform-modules
 
 2. **Choose a module:**
 ```bash
-cd terraform-vpc-module
+cd resources/vpc-eg
 ```
 
-3. **Review the example:**
+3. **Customize for your needs:**
 ```bash
-cd examples/complete
-cat main.tf
-```
-
-4. **Customize for your needs:**
-```bash
-cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your values
 ```
 
