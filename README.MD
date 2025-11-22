@@ -212,51 +212,8 @@ While this is a personal repository, I welcome suggestions and improvements:
 4. **Add/update documentation** for any changes
 5. **Submit a pull request** with a clear description
 
-### Example 3: Multi-Environment Setup
 
-```hcl
-# Production
-module "vpc_prod" {
-  source = "./terraform-vpc-module"
-  
-  name_prefix          = "prod"
-  vpc_cidr             = "10.0.0.0/16"
-  public_subnet_count  = 3
-  private_subnet_count = 3
-  nat_gateway_count    = 3  # HA
-  enable_flow_logs     = true
-  
-  tags = { Environment = "production" }
-}
-
-# Staging
-module "vpc_staging" {
-  source = "./terraform-vpc-module"
-  
-  name_prefix          = "staging"
-  vpc_cidr             = "10.1.0.0/16"
-  public_subnet_count  = 2
-  private_subnet_count = 2
-  nat_gateway_count    = 1  # Cost-optimized
-  
-  tags = { Environment = "staging" }
-}
-
-# Development
-module "vpc_dev" {
-  source = "./terraform-vpc-module"
-  
-  name_prefix          = "dev"
-  vpc_cidr             = "10.2.0.0/16"
-  public_subnet_count  = 2
-  private_subnet_count = 2
-  nat_gateway_count    = 1
-  
-  tags = { Environment = "development" }
-}
-```
-
-## 🎓 Learning Resources
+## Learning Resources
 
 If you're new to Terraform or want to learn more:
 
@@ -265,7 +222,7 @@ If you're new to Terraform or want to learn more:
 - [Terraform Best Practices](https://www.terraform-best-practices.com/)
 - [AWS VPC Best Practices](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-best-practices.html)
 
-## 📈 Roadmap
+## Roadmap
 
 ### Short Term
 - [ ] EC2 Auto Scaling Group module
@@ -292,7 +249,7 @@ As a DevOps/Cloud Engineer, I found myself repeatedly creating similar infrastru
 3. **Portfolio**: Demonstrate my Terraform and AWS expertise
 4. **Community Contribution**: Share knowledge with others on similar journeys
 
-## 📝 Blog Posts & Articles
+## Blog Posts & Articles
 
 I write about my experiences with DevOps and infrastructure as code:
 
