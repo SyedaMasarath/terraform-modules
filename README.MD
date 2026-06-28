@@ -112,32 +112,36 @@ aws secretsmanager get-secret-value \
 
 ## State Management
 
-Each environment writes to a separate S3 key, with DynamoDB for locking. Create these once:
+Terraform 1.10 introduced native S3 state locking via conditional writes — no DynamoDB table required. All environments use `use_lockfile = true` in the S3 backend. Terraform writes a `.tflock` file next to the state file for the duration of an operation and removes it on completion.
+
+Create the state bucket once:
 
 ```bash
-# State bucket
 aws s3api create-bucket --bucket my-terraform-state --region us-east-1
+
 aws s3api put-bucket-versioning \
   --bucket my-terraform-state \
   --versioning-configuration Status=Enabled
 
-# Lock table
-aws dynamodb create-table \
-  --table-name terraform-state-lock \
-  --attribute-definitions AttributeName=LockID,AttributeType=S \
-  --key-schema AttributeName=LockID,KeyType=HASH \
-  --billing-mode PAY_PER_REQUEST \
-  --region us-east-1
+# Block public access on the state bucket
+aws s3api put-public-access-block \
+  --bucket my-terraform-state \
+  --public-access-block-configuration \
+    "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
 ```
 
-State layout:
+State layout after all environments are initialised:
+
 ```
 s3://my-terraform-state/
 ├── us-east-1/staging/terraform.tfstate
+├── us-east-1/staging/terraform.tfstate.tflock   # created during apply, auto-removed after
 ├── us-east-1/production/terraform.tfstate
 ├── eu-west-1/staging/terraform.tfstate
 └── eu-west-1/production/terraform.tfstate
 ```
+
+> **Requires Terraform >= 1.10.** If you are on an older version, replace `use_lockfile = true` with `dynamodb_table = "<table-name>"` in each `providers.tf`.
 
 ---
 

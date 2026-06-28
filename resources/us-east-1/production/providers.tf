@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.10.0"
 
   required_providers {
     aws = {
@@ -13,11 +13,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "REPLACE-ME-terraform-state-bucket"
-    key            = "us-east-1/production/terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    dynamodb_table = "REPLACE-ME-terraform-state-lock"
+    bucket       = "REPLACE-ME-terraform-state-bucket"
+    key          = "us-east-1/production/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true # native S3 locking — no DynamoDB table required (Terraform >= 1.10)
   }
 }
 
