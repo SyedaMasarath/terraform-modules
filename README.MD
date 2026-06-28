@@ -246,6 +246,25 @@ Runs on push/PR **and** on a weekly Monday schedule so drift is caught even with
 
 ---
 
+## AI-First Workflow
+
+This repo is built and maintained using **[Claude Code](https://claude.ai/code)** with its built-in **Terraform skill**, extended by a project-specific **[`CLAUDE.md`](./CLAUDE.md)**.
+
+| Layer | Role |
+|-------|------|
+| Claude Code — Terraform skill | Terraform syntax, AWS provider knowledge, module design, HCL best practices |
+| [`CLAUDE.md`](./CLAUDE.md) | Project conventions, provider pinning rules, CI setup, commit style — loaded automatically every session |
+
+Typical session flow:
+
+```
+Claude Code (Terraform skill + CLAUDE.md) → write / refactor module → terraform fmt + validate → push → CI confirms
+```
+
+The human owns architecture decisions; Claude handles correctness details — provider constraints, variable descriptions, security group rules, workflow YAML.
+
+---
+
 ## Blog Posts
 
 - [How to make AWS EKS auto production-ready](https://syedamasarath.substack.com/p/how-to-make-aws-eks-auto-production)
