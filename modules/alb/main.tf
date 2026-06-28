@@ -60,7 +60,8 @@ resource "aws_lb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    type = var.redirect_http_to_https ? "redirect" : "forward"
+    type             = var.redirect_http_to_https ? "redirect" : "forward"
+    target_group_arn = var.redirect_http_to_https ? null : aws_lb_target_group.this.arn
 
     dynamic "redirect" {
       for_each = var.redirect_http_to_https ? [1] : []
@@ -68,13 +69,6 @@ resource "aws_lb_listener" "http" {
         status_code = "HTTP_301"
         protocol    = "HTTPS"
         port        = tostring(var.https_port)
-      }
-    }
-
-    dynamic "forward" {
-      for_each = var.redirect_http_to_https ? [] : [1]
-      content {
-        target_group_arn = aws_lb_target_group.this.arn
       }
     }
   }

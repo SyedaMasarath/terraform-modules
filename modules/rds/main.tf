@@ -43,11 +43,11 @@ resource "aws_security_group" "this" {
   dynamic "ingress" {
     for_each = var.allowed_sg_ids
     content {
-      from_port         = 5432
-      to_port           = 5432
-      protocol          = "tcp"
-      security_group_id = ingress.value
-      description       = "Allow database access from application security group"
+      from_port       = 5432
+      to_port         = 5432
+      protocol        = "tcp"
+      security_groups = [ingress.value]
+      description     = "Allow database access from application security group"
     }
   }
 
@@ -152,20 +152,11 @@ resource "aws_secretsmanager_secret_version" "credentials" {
   depends_on = [aws_rds_cluster.this]
 }
 
-# Automatic rotation using the AWS-managed single-user rotation Lambda.
-# This rotates the master password in both Secrets Manager and the Aurora cluster.
-# For multi-user rotation (separate rotation user), set use_managed_rotation = false
-# and supply your own rotation Lambda ARN.
 resource "aws_secretsmanager_secret_rotation" "credentials" {
-  secret_id = aws_secretsmanager_secret.credentials.id
+  secret_id           = aws_secretsmanager_secret.credentials.id
+  rotation_lambda_arn = var.rotation_lambda_arn
 
   rotation_rules {
-    # Rotate every 30 days
     automatically_after_days = var.secret_rotation_days
-  }
-
-  # AWS-managed rotation Lambda — no custom Lambda needed for single-user rotation
-  managed_rotation {
-    enabled = true
   }
 }

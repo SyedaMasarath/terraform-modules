@@ -12,6 +12,11 @@ variable "kms_key_arn" {
   type        = string
 }
 
+variable "rotation_lambda_arn" {
+  description = "ARN of the Secrets Manager rotation Lambda. Use the AWS-provided single-user rotation Lambda for Aurora PostgreSQL."
+  type        = string
+}
+
 variable "secret_rotation_days" {
   description = "Number of days between automatic Secrets Manager password rotations."
   type        = number

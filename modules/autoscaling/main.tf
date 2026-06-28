@@ -2,17 +2,17 @@ resource "aws_launch_template" "this" {
   name_prefix   = "${var.name_prefix}-lt-"
   image_id      = var.ami_id
   instance_type = var.instance_type
-  key_name      = length(trim(var.key_name)) > 0 ? var.key_name : null
+  key_name      = length(trimspace(var.key_name)) > 0 ? var.key_name : null
 
   dynamic "iam_instance_profile" {
-    for_each = length(trim(var.iam_instance_profile)) > 0 ? [1] : []
+    for_each = length(trimspace(var.iam_instance_profile)) > 0 ? [1] : []
     content {
       name = var.iam_instance_profile
     }
   }
 
   vpc_security_group_ids = var.security_group_ids
-  user_data              = length(trim(var.user_data)) > 0 ? base64encode(var.user_data) : null
+  user_data              = length(trimspace(var.user_data)) > 0 ? base64encode(var.user_data) : null
 
   dynamic "block_device_mappings" {
     for_each = var.ebs_volume_size > 0 ? [1] : []

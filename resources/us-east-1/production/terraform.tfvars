@@ -20,3 +20,5 @@ app_node_max            = 10
 db_name           = "myapp"
 db_instance_class = "db.r7g.large"
 db_instances      = 2
+
+rotation_lambda_arn = "REPLACE-ME-rotation-lambda-arn"

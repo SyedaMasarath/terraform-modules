@@ -74,6 +74,11 @@ variable "app_node_max" {
 }
 
 # RDS
+variable "rotation_lambda_arn" {
+  description = "ARN of the Secrets Manager rotation Lambda for the RDS master password"
+  type        = string
+}
+
 variable "db_name" {
   description = "Initial database name"
   type        = string

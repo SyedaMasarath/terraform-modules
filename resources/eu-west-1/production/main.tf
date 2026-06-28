@@ -62,6 +62,7 @@ module "rds" {
 
   allowed_sg_ids = [module.eks.node_security_group_id]
 
+  rotation_lambda_arn = var.rotation_lambda_arn
   instance_class      = var.db_instance_class
   instances           = var.db_instances
   deletion_protection = true
