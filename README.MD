@@ -50,6 +50,8 @@ Each `resources/<region>/<env>/` is an independent Terraform root module with it
 | [`modules/alb`](./modules/alb) | Application Load Balancer with HTTPS and access logging |
 | [`modules/autoscaling`](./modules/autoscaling) | EC2 Auto Scaling Group with launch template |
 | [`modules/s3`](./modules/s3) | S3 buckets with encryption, versioning, lifecycle, and replication |
+| [`modules/ecr`](./modules/ecr) | ECR repositories with immutable tags, scanning, and lifecycle policies |
+| [`modules/waf`](./modules/waf) | WAFv2 Web ACL with managed rules, rate limiting, and IP lists |
 
 ---
 

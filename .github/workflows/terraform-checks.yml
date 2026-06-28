@@ -36,6 +36,8 @@ jobs:
           - modules/autoscaling
           - modules/eks
           - modules/rds
+          - modules/ecr
+          - modules/waf
 
     steps:
       - uses: actions/checkout@v4
