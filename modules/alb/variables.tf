@@ -64,7 +64,7 @@ variable "access_logs_bucket" {
   type        = string
   default     = ""
   validation {
-    condition     = !var.access_logs_enabled || length(trim(var.access_logs_bucket)) > 0
+    condition     = !var.access_logs_enabled || length(trimspace(var.access_logs_bucket)) > 0
     error_message = "access_logs_bucket must be set when access_logs_enabled is true."
   }
 }
@@ -130,7 +130,7 @@ variable "ssl_certificate_arn" {
   type        = string
   default     = ""
   validation {
-    condition     = !var.create_https_listener || length(trim(var.ssl_certificate_arn)) > 0
+    condition     = !var.create_https_listener || length(trimspace(var.ssl_certificate_arn)) > 0
     error_message = "ssl_certificate_arn must be set when create_https_listener is true."
   }
 }
