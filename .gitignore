@@ -1,0 +1,40 @@
+# Terraform state files — never commit
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Terraform plan files — can contain sensitive data
+*.tfplan
+*.tfplan.*
+
+# Terraform working directories
+**/.terraform/
+**/.terraform.lock.hcl
+
+# Variable files that may contain secrets
+*.tfvars.json
+secret.tfvars
+secrets.tfvars
+
+# Crash log
+crash.log
+crash.*.log
+
+# Override files (local dev only)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config (contains credentials)
+.terraformrc
+terraform.rc
+
+# macOS
+.DS_Store
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
