@@ -3,6 +3,8 @@
 [![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.5-purple?logo=terraform)](https://www.terraform.io/)
 [![AWS](https://img.shields.io/badge/AWS-Provider%20%3E%3D5.0-orange?logo=amazon-aws)](https://registry.terraform.io/providers/hashicorp/aws/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
+[![Terraform Checks](https://github.com/SyedaMasarath/terraform-modules/actions/workflows/terraform-checks.yml/badge.svg)](https://github.com/SyedaMasarath/terraform-modules/actions/workflows/terraform-checks.yml)
+[![Security Scan](https://github.com/SyedaMasarath/terraform-modules/actions/workflows/security-scan.yml/badge.svg)](https://github.com/SyedaMasarath/terraform-modules/actions/workflows/security-scan.yml)
 
 Production-grade, reusable Terraform modules for AWS — structured for multi-region, multi-environment deployments.
 
@@ -12,18 +14,23 @@ Production-grade, reusable Terraform modules for AWS — structured for multi-re
 
 ```
 terraform-modules/
-├── modules/                    # Reusable infrastructure building blocks
-│   ├── vpc/                    # VPC, subnets, NAT gateways, flow logs
-│   ├── eks/                    # EKS cluster, node groups, IRSA, add-ons
-│   ├── rds/                    # Aurora PostgreSQL, Secrets Manager, KMS
-│   ├── alb/                    # Application Load Balancer, listeners
-│   ├── autoscaling/            # EC2 Auto Scaling Group, launch template
-│   └── s3/                     # S3 buckets, encryption, lifecycle, replication
+├── .github/
+│   └── workflows/
+│       ├── terraform-checks.yml  # fmt, validate, tflint
+│       └── security-scan.yml     # Trivy + Checkov (runs weekly + on every PR)
+├── .tflint.hcl                   # TFLint ruleset config
+├── modules/                      # Reusable infrastructure building blocks
+│   ├── vpc/                      # VPC, subnets, NAT gateways, flow logs
+│   ├── eks/                      # EKS cluster, node groups, IRSA, add-ons
+│   ├── rds/                      # Aurora PostgreSQL, Secrets Manager, KMS
+│   ├── alb/                      # Application Load Balancer, listeners
+│   ├── autoscaling/              # EC2 Auto Scaling Group, launch template
+│   └── s3/                       # S3 buckets, encryption, lifecycle, replication
 │
-└── resources/                  # Environment root modules (real deployments)
+└── resources/                    # Environment root modules (real deployments)
     ├── us-east-1/
-    │   ├── staging/            # VPC + EKS  (SPOT nodes, 1 NAT)
-    │   └── production/         # VPC + EKS + RDS  (ON_DEMAND, 3 NAT, deletion protection)
+    │   ├── staging/              # VPC + EKS  (SPOT nodes, 1 NAT)
+    │   └── production/           # VPC + EKS + RDS  (ON_DEMAND, 3 NAT, deletion protection)
     └── eu-west-1/
         ├── staging/
         └── production/
@@ -184,7 +191,38 @@ terraform fmt -recursive        # format all files
 terraform validate              # syntax + type check
 tflint --recursive              # lint rules
 trivy config .                  # security misconfig scan
+checkov -d . --framework terraform  # policy scan
 ```
+
+---
+
+## CI / CD
+
+Every push and pull request to `main` runs two workflows automatically.
+
+### Terraform Checks
+
+[`.github/workflows/terraform-checks.yml`](./.github/workflows/terraform-checks.yml)
+
+| Job | What it does |
+|-----|-------------|
+| `fmt` | `terraform fmt -check -recursive` — fails if any file is not formatted |
+| `validate-modules` | Matrix job: `terraform init` + `terraform validate` on each of the 6 modules |
+| `validate-envs` | Matrix job: `terraform init -backend=false` + `terraform validate` on all 4 environment root modules (no AWS credentials needed) |
+| `tflint` | Runs the [tflint AWS ruleset](https://github.com/terraform-linters/tflint-ruleset-aws) recursively using `.tflint.hcl` |
+
+### Security Scan
+
+[`.github/workflows/security-scan.yml`](./.github/workflows/security-scan.yml)
+
+Runs on push/PR **and** on a weekly Monday schedule so drift is caught even without code changes.
+
+| Job | Tool | What it checks |
+|-----|------|----------------|
+| `trivy` | [Trivy](https://aquasecurity.github.io/trivy/) | Misconfigurations, HIGH/CRITICAL severity — results uploaded to the GitHub Security tab as SARIF |
+| `checkov` | [Checkov](https://www.checkov.io/) | Bridgecrew policy framework — 1000+ Terraform checks — results also uploaded to GitHub Security tab |
+
+> Results appear under **Security → Code scanning** in the repository. Two intentional suppressions are documented in the workflow file with explanations.
 
 ---
 
