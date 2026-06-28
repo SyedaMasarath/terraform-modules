@@ -53,7 +53,9 @@ resource "aws_wafv2_web_acl" "this" {
     content {
       name     = "IPAllowList"
       priority = 5
-      action { allow {} }
+      action {
+        allow {}
+      }
       statement {
         ip_set_reference_statement {
           arn = aws_wafv2_ip_set.allowed[0].arn
@@ -73,7 +75,9 @@ resource "aws_wafv2_web_acl" "this" {
     content {
       name     = "AWSManagedRulesCommonRuleSet"
       priority = 10
-      override_action { none {} }
+      override_action {
+        none {}
+      }
       statement {
         managed_rule_group_statement {
           name        = "AWSManagedRulesCommonRuleSet"
@@ -94,7 +98,9 @@ resource "aws_wafv2_web_acl" "this" {
     content {
       name     = "AWSManagedRulesKnownBadInputsRuleSet"
       priority = 20
-      override_action { none {} }
+      override_action {
+        none {}
+      }
       statement {
         managed_rule_group_statement {
           name        = "AWSManagedRulesKnownBadInputsRuleSet"
@@ -115,7 +121,9 @@ resource "aws_wafv2_web_acl" "this" {
     content {
       name     = "AWSManagedRulesAmazonIpReputationList"
       priority = 30
-      override_action { none {} }
+      override_action {
+        none {}
+      }
       statement {
         managed_rule_group_statement {
           name        = "AWSManagedRulesAmazonIpReputationList"
@@ -136,7 +144,9 @@ resource "aws_wafv2_web_acl" "this" {
     content {
       name     = "AWSManagedRulesSQLiRuleSet"
       priority = 40
-      override_action { none {} }
+      override_action {
+        none {}
+      }
       statement {
         managed_rule_group_statement {
           name        = "AWSManagedRulesSQLiRuleSet"
@@ -157,7 +167,9 @@ resource "aws_wafv2_web_acl" "this" {
     content {
       name     = "RateLimitRule"
       priority = 50
-      action { block {} }
+      action {
+        block {}
+      }
       statement {
         rate_based_statement {
           limit              = var.rate_limit
@@ -178,7 +190,9 @@ resource "aws_wafv2_web_acl" "this" {
     content {
       name     = "IPDenyList"
       priority = 60
-      action { block {} }
+      action {
+        block {}
+      }
       statement {
         ip_set_reference_statement {
           arn = aws_wafv2_ip_set.blocked[0].arn

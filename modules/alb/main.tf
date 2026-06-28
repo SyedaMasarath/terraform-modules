@@ -1,12 +1,12 @@
 resource "aws_lb" "this" {
-  name               = "${var.name_prefix}-alb"
-  internal           = var.internal
-  load_balancer_type = "application"
-  subnets            = var.subnets
-  security_groups    = length(var.security_group_ids) > 0 ? var.security_group_ids : null
-  ip_address_type    = var.ip_address_type
-  enable_http2       = var.enable_http2
-  idle_timeout       = var.idle_timeout
+  name                       = "${var.name_prefix}-alb"
+  internal                   = var.internal
+  load_balancer_type         = "application"
+  subnets                    = var.subnets
+  security_groups            = length(var.security_group_ids) > 0 ? var.security_group_ids : null
+  ip_address_type            = var.ip_address_type
+  enable_http2               = var.enable_http2
+  idle_timeout               = var.idle_timeout
   enable_deletion_protection = var.enable_deletion_protection
 
   dynamic "access_logs" {

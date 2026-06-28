@@ -101,10 +101,10 @@ resource "aws_security_group" "nodes" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
     description = "Allow node-to-node communication"
   }
 
@@ -284,8 +284,8 @@ resource "aws_eks_node_group" "system" {
   }
 
   tags = merge(local.tags, {
-    Name                                          = "${local.cluster_name}-system-node"
-    "k8s.io/cluster-autoscaler/enabled"           = "true"
+    Name                                              = "${local.cluster_name}-system-node"
+    "k8s.io/cluster-autoscaler/enabled"               = "true"
     "k8s.io/cluster-autoscaler/${local.cluster_name}" = "owned"
   })
 
@@ -333,8 +333,8 @@ resource "aws_eks_node_group" "application" {
   }
 
   tags = merge(local.tags, {
-    Name                                          = "${local.cluster_name}-app-node"
-    "k8s.io/cluster-autoscaler/enabled"           = "true"
+    Name                                              = "${local.cluster_name}-app-node"
+    "k8s.io/cluster-autoscaler/enabled"               = "true"
     "k8s.io/cluster-autoscaler/${local.cluster_name}" = "owned"
   })
 
@@ -454,11 +454,11 @@ resource "aws_launch_template" "nodes" {
 ################################################################################
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name             = aws_eks_cluster.this.name
-  addon_name               = "vpc-cni"
-  addon_version            = var.vpc_cni_version
+  cluster_name                = aws_eks_cluster.this.name
+  addon_name                  = "vpc-cni"
+  addon_version               = var.vpc_cni_version
   resolve_conflicts_on_update = "OVERWRITE"
-  service_account_role_arn = aws_iam_role.vpc_cni.arn
+  service_account_role_arn    = aws_iam_role.vpc_cni.arn
 
   configuration_values = jsonencode({
     env = {
@@ -473,9 +473,9 @@ resource "aws_eks_addon" "vpc_cni" {
 }
 
 resource "aws_eks_addon" "coredns" {
-  cluster_name             = aws_eks_cluster.this.name
-  addon_name               = "coredns"
-  addon_version            = var.coredns_version
+  cluster_name                = aws_eks_cluster.this.name
+  addon_name                  = "coredns"
+  addon_version               = var.coredns_version
   resolve_conflicts_on_update = "OVERWRITE"
 
   tags = local.tags
@@ -484,9 +484,9 @@ resource "aws_eks_addon" "coredns" {
 }
 
 resource "aws_eks_addon" "kube_proxy" {
-  cluster_name             = aws_eks_cluster.this.name
-  addon_name               = "kube-proxy"
-  addon_version            = var.kube_proxy_version
+  cluster_name                = aws_eks_cluster.this.name
+  addon_name                  = "kube-proxy"
+  addon_version               = var.kube_proxy_version
   resolve_conflicts_on_update = "OVERWRITE"
 
   tags = local.tags
@@ -495,11 +495,11 @@ resource "aws_eks_addon" "kube_proxy" {
 }
 
 resource "aws_eks_addon" "ebs_csi" {
-  cluster_name             = aws_eks_cluster.this.name
-  addon_name               = "aws-ebs-csi-driver"
-  addon_version            = var.ebs_csi_version
+  cluster_name                = aws_eks_cluster.this.name
+  addon_name                  = "aws-ebs-csi-driver"
+  addon_version               = var.ebs_csi_version
   resolve_conflicts_on_update = "OVERWRITE"
-  service_account_role_arn = aws_iam_role.ebs_csi.arn
+  service_account_role_arn    = aws_iam_role.ebs_csi.arn
 
   tags = local.tags
 

@@ -19,11 +19,11 @@ module "vpc" {
   nat_gateway_count    = var.nat_gateway_count
 
   public_subnet_tags = {
-    "kubernetes.io/role/elb"                              = "1"
+    "kubernetes.io/role/elb"                                  = "1"
     "kubernetes.io/cluster/${var.project}-${var.environment}" = "shared"
   }
   private_subnet_tags = {
-    "kubernetes.io/role/internal-elb"                     = "1"
+    "kubernetes.io/role/internal-elb"                         = "1"
     "kubernetes.io/cluster/${var.project}-${var.environment}" = "shared"
   }
 

@@ -43,11 +43,11 @@ resource "aws_security_group" "this" {
   dynamic "ingress" {
     for_each = var.allowed_sg_ids
     content {
-      from_port                = 5432
-      to_port                  = 5432
-      protocol                 = "tcp"
-      security_group_id        = ingress.value
-      description              = "Allow database access from application security group"
+      from_port         = 5432
+      to_port           = 5432
+      protocol          = "tcp"
+      security_group_id = ingress.value
+      description       = "Allow database access from application security group"
     }
   }
 
@@ -73,23 +73,23 @@ resource "aws_db_subnet_group" "this" {
 }
 
 resource "aws_rds_cluster" "this" {
-  cluster_identifier      = var.identifier
-  engine                  = "aurora-postgresql"
-  engine_version          = var.engine_version
-  master_username         = var.master_username
-  master_password         = random_password.db_password.result
-  database_name           = var.database_name
-  db_subnet_group_name    = aws_db_subnet_group.this.name
-  vpc_security_group_ids  = [aws_security_group.this.id]
-  storage_encrypted       = true
-  backup_retention_period = var.backup_retention_period
-  preferred_backup_window = var.preferred_backup_window
+  cluster_identifier           = var.identifier
+  engine                       = "aurora-postgresql"
+  engine_version               = var.engine_version
+  master_username              = var.master_username
+  master_password              = random_password.db_password.result
+  database_name                = var.database_name
+  db_subnet_group_name         = aws_db_subnet_group.this.name
+  vpc_security_group_ids       = [aws_security_group.this.id]
+  storage_encrypted            = true
+  backup_retention_period      = var.backup_retention_period
+  preferred_backup_window      = var.preferred_backup_window
   preferred_maintenance_window = var.preferred_maintenance_window
   performance_insights_enabled = var.performance_insights_enabled
   monitoring_interval          = var.monitoring_interval
-  deletion_protection      = var.deletion_protection
-  skip_final_snapshot      = false
-  final_snapshot_identifier = "${var.identifier}-final-snapshot"
+  deletion_protection          = var.deletion_protection
+  skip_final_snapshot          = false
+  final_snapshot_identifier    = "${var.identifier}-final-snapshot"
 
   tags = merge(var.tags, {
     Name = "${var.identifier}-rds-cluster"
@@ -137,7 +137,7 @@ resource "aws_secretsmanager_secret" "credentials" {
 }
 
 resource "aws_secretsmanager_secret_version" "credentials" {
-  secret_id     = aws_secretsmanager_secret.credentials.id
+  secret_id = aws_secretsmanager_secret.credentials.id
   secret_string = jsonencode({
     username = var.master_username
     password = random_password.db_password.result
@@ -145,7 +145,7 @@ resource "aws_secretsmanager_secret_version" "credentials" {
     port     = aws_rds_cluster.this.port
     database = var.database_name
     # engine field is used by the AWS-managed rotation Lambda
-    engine   = "aurora-postgresql"
+    engine = "aurora-postgresql"
   })
 
   # Ensure the cluster exists before writing credentials

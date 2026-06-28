@@ -20,10 +20,10 @@ resource "aws_launch_template" "this" {
       device_name = "/dev/xvda"
 
       ebs {
-        volume_size = var.ebs_volume_size
-        volume_type = var.ebs_volume_type
-        iops        = var.ebs_volume_type == "gp3" ? var.ebs_iops : null
-        throughput  = var.ebs_volume_type == "gp3" ? var.ebs_throughput : null
+        volume_size           = var.ebs_volume_size
+        volume_type           = var.ebs_volume_type
+        iops                  = var.ebs_volume_type == "gp3" ? var.ebs_iops : null
+        throughput            = var.ebs_volume_type == "gp3" ? var.ebs_throughput : null
         delete_on_termination = true
       }
     }

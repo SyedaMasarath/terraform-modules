@@ -1,0 +1,18 @@
+# Trivy misconfiguration suppressions
+# Each entry is a finding ID with the rationale for accepting the risk.
+
+# AVD-AWS-0104: Security group allows unrestricted egress
+# EKS nodes must reach the internet for ECR image pulls, OS package updates,
+# and the Kubernetes API. Restricting egress by destination is done at the
+# NACLs / Firewall layer, not the instance security group.
+AVD-AWS-0104
+
+# AVD-AWS-0175: EKS cluster has public endpoint enabled
+# Access is restricted via public_access_cidrs to the caller's CIDR.
+# Fully private clusters require a bastion or VPN, which is out of scope here.
+AVD-AWS-0175
+
+# AVD-AWS-0123: RDS / Aurora minor version auto-upgrade disabled
+# Minor version upgrades are applied during maintenance windows; the module
+# exposes the variable and leaves the choice to each environment.
+AVD-AWS-0123
