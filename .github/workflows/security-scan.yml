@@ -1,0 +1,68 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1" # every Monday at 06:00 UTC
+
+jobs:
+  # ── Trivy misconfiguration scan ───────────────────────────────────────────
+  trivy:
+    name: Trivy Config Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write  # needed to upload SARIF to GitHub Security tab
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          scan-ref: .
+          format: sarif
+          output: trivy-results.sarif
+          severity: HIGH,CRITICAL
+          exit-code: 1
+
+      - name: Upload Trivy SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy
+
+  # ── Checkov policy scan ───────────────────────────────────────────────────
+  checkov:
+    name: Checkov
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          framework: terraform
+          output_format: sarif
+          output_file_path: checkov-results.sarif
+          # Suppress known accepted risks:
+          # CKV_AWS_* rules listed below are intentional design choices
+          # CKV2_AWS_12: VPC default security group — we create our own SGs
+          # CKV_AWS_130: subnets map_public_ip_on_launch — required for public subnets
+          skip_check: CKV2_AWS_12,CKV_AWS_130
+          soft_fail: false
+
+      - name: Upload Checkov SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov-results.sarif
+          category: checkov

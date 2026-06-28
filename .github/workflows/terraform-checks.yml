@@ -1,0 +1,100 @@
+name: Terraform Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Format ────────────────────────────────────────────────────────────────
+  fmt:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.0"
+
+      - name: terraform fmt
+        run: terraform fmt -check -recursive
+        working-directory: .
+
+  # ── Validate modules ──────────────────────────────────────────────────────
+  validate-modules:
+    name: Validate / ${{ matrix.module }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+          - modules/vpc
+          - modules/s3
+          - modules/alb
+          - modules/autoscaling
+          - modules/eks
+          - modules/rds
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.0"
+
+      - name: terraform init
+        run: terraform init -backend=false
+        working-directory: ${{ matrix.module }}
+
+      - name: terraform validate
+        run: terraform validate
+        working-directory: ${{ matrix.module }}
+
+  # ── Validate environments (no real backend needed) ────────────────────────
+  validate-envs:
+    name: Validate / ${{ matrix.env }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - resources/us-east-1/staging
+          - resources/us-east-1/production
+          - resources/eu-west-1/staging
+          - resources/eu-west-1/production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.0"
+
+      - name: terraform init (skip backend)
+        run: terraform init -backend=false
+        working-directory: ${{ matrix.env }}
+
+      - name: terraform validate
+        run: terraform validate
+        working-directory: ${{ matrix.env }}
+
+  # ── TFLint ────────────────────────────────────────────────────────────────
+  tflint:
+    name: TFLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: latest
+
+      - name: Init TFLint (downloads AWS ruleset plugin)
+        run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Run TFLint
+        run: tflint --recursive --format compact
